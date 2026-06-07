@@ -1,10 +1,10 @@
-name: Minecraft Bedrock 1.21.130 AFK Bot
+name: Minecraft Bedrock AFK Bot
 
 on:
   push:
     branches: [ "main" ]
   schedule:
-    # يعمل تلقائياً كل 15 دقيقة لإعادة إنعاش السيرفر وضمان عدم إغلاقه
+    # يعمل تلقائياً كل 15 دقيقة لإنعاش السيرفر وضمان عدم إغلاقه
     - cron: '*/15 * * * *'
 
 jobs:
@@ -26,5 +26,5 @@ jobs:
 
     - name: Execute Bedrock Bot
       run: node bot.js
-      # نضع حد أقصى لتشغيل الأكشن (25 دقيقة) حتى لا يستهلك ساعات GitHub المجانية بسرعة ويتم كشفه
+      # نضع حداً أقصى لتشغيل الأكشن (25 دقيقة) حتى لا يستهلك ساعات GitHub المجانية بسرعة
       timeout-minutes: 25
