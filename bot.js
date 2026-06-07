@@ -1,12 +1,12 @@
 const bedrock = require('bedrock-protocol');
 
-// إعدادات الاتصال بالسيرفر - قم بتعديلها لتناسب سيرفرك
+// إعدادات الاتصال بالسيرفر مأخوذة تلقائياً من الصورة المرفقة image_58a8a1.png
 const botOptions = {
-  host: 'your-aternos-ip.aternos.me', // الآي بي الخاص بسيرفرك في أترنوس
-  port: 12345,                         // البورت الخاص بالسيرفر
-  username: 'RealPlayer_AFK',          // اسم البوت داخل اللعبة
-  offline: true,                       // اجعلها true إذا كان السيرفر مكرك (Cracked)، أو false إذا كان حساب رسمي
-  version: '1.21.130'                  // تحديد الإصدار بدقة ليطابق سيرفرك
+  host: 'Bluelightmine.aternos.me', // الـ IP الخاص بسيرفرك
+  port: 51069,                      // المنفذ (Port) الخاص بسيرفرك
+  username: 'RealPlayer_AFK',       // اسم البوت داخل اللعبة
+  offline: true,                    // مفعل للسيرفرات المكركة (Cracked)
+  version: '1.21.130'               // تحديد الإصدار المطابق لسيرفرك
 };
 
 // إنشاء الاتصال بالسيرفر
@@ -37,19 +37,17 @@ function startBedrockLoop() {
     if (!client) return;
 
     // توليد زوايا نظر عشوائية (التفات الرأس)
-    // yaw: الدوران الأفقي (0 إلى 360 درجة) ، pitch: الارتفاع والانخفاض (-90 إلى 90 درجة)
     const randomYaw = Math.random() * 360;
     const randomPitch = (Math.random() * 180) - 90;
 
-    // توليد حركة بسيطة جداً عشوائية في الإحداثيات (خطوة للأمام أو الخلف أو الجنب)
-    // نتحرك بمقدار صغير (بين -0.5 و 0.5 بلوكة) لتجنب السقوط من المرتفعات
+    // توليد حركة بسيطة عشوائية (بين -0.5 و 0.5 بلوكة) لتجنب الحظر أو التعليق
     const moveX = (Math.random() * 1) - 0.5;
     const moveZ = (Math.random() * 1) - 0.5;
     
     currentPos.x += moveX;
     currentPos.z += moveZ;
 
-    // إرسال حزمة الحركة والنظر (Player Auth Input Packet) وهي الحزمة الرسمية في البدروك
+    // إرسال حزمة الحركة والنظر الرسمية (Player Auth Input Packet)
     client.write('player_auth_input', {
       pitch: randomPitch,
       yaw: randomYaw,
@@ -62,7 +60,7 @@ function startBedrockLoop() {
         move_left: moveZ > 0,
         move_right: moveZ < 0,
         sneaking: false,
-        jumping: Math.random() > 0.7 // نسبة 30% يقوم بالقفز أثناء الحركة
+        jumping: Math.random() > 0.7 // نسبة 30% يقوم بالقفز أثناء الحركة لتوثيق النشاط
       },
       input_mode: 'mouse',
       play_mode: 'normal',
@@ -71,7 +69,7 @@ function startBedrockLoop() {
 
     console.log(`[حركة] البوت تحرك إلى X: ${currentPos.x.toFixed(2)}, Z: ${currentPos.z.toFixed(2)} والتفت عشوائياً.`);
 
-    // شات عشوائي بنسبة ضئيلة جداً لتفادي كشف الـ Spam
+    // شات عشوائي بنسبة ضئيلة جداً لتفادي نظام كشف السبام (Spam Detection)
     if (Math.random() < 0.1) {
       const phrases = ["Hello", "I'm building", "Wait a minute", "No lag today"];
       const randomTxt = phrases[Math.floor(Math.random() * phrases.length)];
@@ -87,7 +85,7 @@ function startBedrockLoop() {
       console.log(`[شات] البوت أرسل: "${randomTxt}"`);
     }
 
-  }, 5000); // تكرار العملية كل 5 ثوانٍ
+  }, 5000); // يتخذ خطوة أو حركة جديدة كل 5 ثوانٍ
 }
 
 // التعامل مع الأخطاء والطرد من السيرفر
