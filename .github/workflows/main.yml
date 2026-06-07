@@ -1,27 +1,36 @@
-name: Minecraft Bedrock AFK Bot
+name: Bedrock AFK Bot 24/7
 
 on:
-  push:
-    branches: [ "main" ]
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '0 */2 * * *' # ⏱️ حيلة ذكية: يعيد تشغيل الجوب تلقائياً كل ساعتين
+  workflow_dispatch:      # 🔘 يسمح لك بتشغيل البوت يدوياً بضغطة زر في أي وقت
+  push:
+    branches: [ main, master ] # 🚀 يشتغل فوراً إذا قمت بتعديل الكود وعملت Commit
+
+# 🔥 سر الطبخة: يقوم بإلغاء البوت القديم وتشغيل الجديد فوراً لمنع الـ Timeout
+concurrency:
+  group: bedrock-afk-bot
+  cancel-in-progress: true
 
 jobs:
-  run-bedrock-bot:
+  run-bot:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: 📁 سحب الكود من المستودع
         uses: actions/checkout@v4
 
-      - name: Setup Node.js Environment
+      - name: 🟢 تهيئة بيئة Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: '20'
+          cache: 'npm'
 
-      - name: Install NPM Dependencies
-        run: npm install
+      - name: 📦 تثبيت مكتبة بروتوكول البدروك
+        run: |
+          if [ ! -f package.json ]; then npm init -y; fi
+          npm install bedrock-protocol
 
-      - name: Execute Bedrock Bot
+      - name: 🤖 تشغيل بوت الأفروة المضاد للطرد
+        timeout-minutes: 340 # حد أمان لمنع تجاوز الـ 6 ساعات الصارمة لغيت هاب
         run: node bot.js
-        timeout-minutes: 25
