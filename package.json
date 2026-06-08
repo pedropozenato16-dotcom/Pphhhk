@@ -1,7 +1,6 @@
 {
   "name": "bedrock-afk-bot",
   "version": "1.0.0",
-  "description": "Minecraft Bedrock AFK Bot for Aternos",
   "main": "bot.js",
   "dependencies": {
     "mineflayer": "latest",
