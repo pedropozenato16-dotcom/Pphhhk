@@ -1,82 +1,34 @@
-/**
- * Bot Name: RealPlayer_AFK
- * الهدف: خمول آمن (AFK) مع حماية ضد الـ bad_packet وتوافق مع السيرفر
- */
+const { createClient } = require('bedrock-protocol');
 
-const bedrock = require('bedrock-protocol');
-
-// إعدادات الاتصال (بدون فرض نسخة لتجنب التعارض)
+// هذا الإعداد هو "الوضع الآمن" للبوت
 const botOptions = {
   host: 'Bluelightmine.aternos.me', 
   port: 51069,                  
   username: 'RealPlayer_AFK',        
   offline: true,
-  skipPing: false, // يسمح للبوت بطلب الإصدار من السيرفر مباشرة
+  // بدلاً من الاعتماد الكلي، سنحدد البروتوكول برقم ثابت يطابق 1.26
+  version: '1.26.20',
+  skipPing: true, // تخطي اختبار Ping لتجنب تعارض البروتوكولات في البداية
 };
 
-let client = null;
-let retryTimer = null;
+function connect() {
+  const client = createClient(botOptions);
 
-function startBot() {
-  if (retryTimer) clearTimeout(retryTimer);
+  client.on('connect', () => console.log('تم الاتصال...'));
   
-  console.log(`[اتصال] جاري محاولة الدخول للسيرفر...`);
+  client.on('spawn', () => console.log('البوت دخل العالم بنجاح!'));
 
-  try {
-    client = bedrock.createClient(botOptions);
+  // إخفاء أخطاء الـ Protocol غير الضرورية لضمان استمرار البوت
+  client.on('error', (err) => {
+    // إذا كان الخطأ مجرد "Undefined Packet"، تجاهله واستمر
+    if (err.message.includes('undefined')) {
+      console.log('تحذير: حزمة غير معروفة، جاري التجاوز...');
+    } else {
+      console.error('خطأ فادح:', err.message);
+    }
+  });
 
-    // عند نجاح الاتصال
-    client.on('connect', () => {
-      console.log(`[+] تم الاتصال بـ بروتوكول السيرفر بنجاح.`);
-    });
-
-    // عند الدخول الكامل للعالم
-    client.on('spawn', () => {
-      console.log(`[+] دخل ${botOptions.username} وبدأ وضع الخمول الآمن.`);
-    });
-
-    // التعامل مع الأخطاء التقنية
-    client.on('error', (err) => {
-      console.error(`[تنبيه] خطأ في البروتوكول (Read/Write): ${err.message}`);
-      triggerRetry();
-    });
-
-    // التعامل مع الطرد (Kick)
-    client.on('kick', (packet) => {
-      console.log(`[-] تم الطرد من السيرفر. السبب: ${packet.message || 'غير معروف'}`);
-      triggerRetry();
-    });
-
-    // التعامل مع انقطاع الاتصال
-    client.on('close', () => {
-      console.log(`[!] انقطع الاتصال مع السيرفر.`);
-      triggerRetry();
-    });
-
-  } catch (error) {
-    console.error(`[خطأ في الكود]:`, error);
-    triggerRetry();
-  }
+  client.on('close', () => setTimeout(connect, 60000));
 }
 
-/**
- * وظيفة إعادة الاتصال الذكية
- * ننتظر 60 ثانية لتجنب اكتشاف السيرفر للـ bad_packet المتكرر
- */
-function triggerRetry() {
-  if (client) {
-    try { client.close(); } catch (e) {}
-    client = null;
-  }
-  
-  if (retryTimer) return;
-
-  console.log(`⏳ ننتظر 60 ثانية لتجنب الـ bad_packet وإعادة المحاولة...`);
-  retryTimer = setTimeout(() => {
-    retryTimer = null;
-    startBot();
-  }, 60000);
-}
-
-// تشغيل البوت
-startBot();
+connect();
