@@ -1,11 +1,13 @@
 {
-  "name": "bedrock-afk-bot",
+  "name": "mc-bedrock-bot",
   "version": "1.0.0",
+  "description": "24/7 Minecraft Bedrock Bot on GitHub Actions",
   "main": "bot.js",
-  "dependencies": {
-    "bedrock-protocol": "latest"
-  },
   "scripts": {
     "start": "node bot.js"
+  },
+  "dependencies": {
+    "mineflayer": "^4.22.0",
+    "minecraft-protocol": "^1.47.0"
   }
 }
