@@ -1,8 +1,8 @@
 const bedrock = require('bedrock-protocol');
 
 const options = {
-    host: 'Nebula_II.aternos.me',        
-    port: 19615,                            
+    host: '',        
+    port: ,                            
     username: 'BedrockBot',                 
     version: '1.26.30',                     
     offline: true                           
