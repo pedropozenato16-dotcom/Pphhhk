@@ -4,12 +4,12 @@ const options = {
     host: 'Nebula_II.aternos.me',        
     port: 19615,                            
     username: 'BedrockBot',                 
-    version: '1.26.20',                     
+    version: '1.26.30',                     
     offline: true                           
 };
 
 function createBot() {
-    console.log("جاري تشغيل البوت والاتصال بسيرفر بيدروك (إصدار 1.26.20)...");
+    console.log("جاري تشغيل البوت والاتصال بسيرفر بيدروك (إصدار 1.26.30)...");
 
     try {
         const client = bedrock.createClient(options);
